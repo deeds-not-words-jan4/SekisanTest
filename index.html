@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>建設積算・原価管理システム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Meiryo', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ヘッダー */
+        header {
+            background: linear-gradient(135deg, #1a3a52 0%, #2c5f7c 100%);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* プロジェクト情報 */
+        .project-header {
+            background: white;
+            padding: 15px 25px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .project-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-field label {
+            font-size: 0.75rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .project-field input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            min-width: 200px;
+        }
+
+        .project-field input:focus {
+            outline: none;
+            border-color: #2c5f7c;
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* サイドバー（マスター） */
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .sidebar-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: #f8f9fa;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-tab.active {
+            background: white;
+            border-bottom: 2px solid #2c5f7c;
+            color: #2c5f7c;
+            font-weight: 600;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .master-item {
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: grab;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s;
+        }
+
+        .master-item:hover {
+            background: #e8f4fc;
+            border-color: #2c5f7c;
+        }
+
+        .master-item-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .master-item-detail {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        /* ツリーエリア */
+        .tree-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .tree-toolbar {
+            padding: 10px 15px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: #2c5f7c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a3a52;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e8449;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d68910;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+
+        /* ツリーテーブル */
+        .tree-container {
+            flex: 1;
+            overflow: auto;
+            background: #fff;
+        }
+
+        .tree-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+
+        .tree-table thead {
+            background: #34495e;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .tree-table th {
+            padding: 10px 8px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            border-right: 1px solid #4a6278;
+        }
+
+        .tree-table th:last-child {
+            border-right: none;
+        }
+
+        .tree-table th.group-header {
+            background: #2c3e50;
+            border-bottom: 1px solid #4a6278;
+        }
+
+        /* 行のスタイル */
+        .tree-row {
+            border-bottom: 1px solid #e8e8e8;
+            transition: background 0.15s;
+        }
+
+        .tree-row:hover {
+            background: #f5f8fa;
+        }
+
+        .tree-row.level-0 {
+            background: #e8f4fc;
+            font-weight: 600;
+        }
+
+        .tree-row.level-0:hover {
+            background: #d4ebf7;
+        }
+
+        .tree-row.level-1 {
+            background: #f0f7ee;
+        }
+
+        .tree-row.level-1:hover {
+            background: #e2f0dd;
+        }
+
+        .tree-row.level-2 {
+            background: #fff;
+        }
+
+        .tree-row.level-3 {
+            background: #fafafa;
+            font-size: 0.85rem;
+        }
+
+        .tree-row.negative {
+            background: #fff5f5 !important;
+        }
+
+        .tree-row.negative:hover {
+            background: #ffe8e8 !important;
+        }
+
+        .tree-row.negative .profit-cell {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .tree-table td {
+            padding: 8px 6px;
+            vertical-align: middle;
+        }
+
+        .tree-cell {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .toggle-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toggle-btn:hover {
+            background: #ccc;
+        }
+
+        .indent {
+            display: inline-block;
+            width: 20px;
+            flex-shrink: 0;
+        }
+
+        .node-icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .node-name {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .node-name input {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            background: transparent;
+            font-size: inherit;
+            font-weight: inherit;
+        }
+
+        .node-name input:hover {
+            border-color: #ddd;
+        }
+
+        .node-name input:focus {
+            outline: none;
+            border-color: #2c5f7c;
+            background: white;
+        }
+
+        /* 入力フィールド */
+        .tree-table input[type="number"],
+        .tree-table input[type="text"],
+        .tree-table select {
+            width: 100%;
+            padding: 5px 6px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+
+        .tree-table input[type="text"] {
+            text-align: left;
+        }
+
+        .tree-table select {
+            text-align: center;
+        }
+
+        .tree-table input:focus,
+        .tree-table select:focus {
+            outline: none;
+            border-color: #2c5f7c;
+        }
+
+        .amount-cell {
+            text-align: right;
+            font-weight: 500;
+            font-family: 'Consolas', monospace;
+            padding: 5px 8px;
+            background: #f8f9fa;
+            border-radius: 3px;
+        }
+
+        .profit-cell {
+            text-align: right;
+            font-family: 'Consolas', monospace;
+            padding: 5px 8px;
+        }
+
+        .rate-cell {
+            text-align: center;
+            font-family: 'Consolas', monospace;
+        }
+
+        .action-cell {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            padding: 3px 6px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin: 0 1px;
+        }
+
+        .action-btn.add {
+            background: #27ae60;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* コスト要素タグ */
+        .cost-type-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .cost-type-tag.material { background: #e8f4fc; color: #2980b9; }
+        .cost-type-tag.labor { background: #fef3e2; color: #e67e22; }
+        .cost-type-tag.subcontract { background: #f3e8fc; color: #9b59b6; }
+        .cost-type-tag.expense { background: #e8fce8; color: #27ae60; }
+        .cost-type-tag.equipment { background: #fce8e8; color: #c0392b; }
+
+        /* サマリーセクション */
+        .summary-section {
+            background: #fff;
+            border-top: 2px solid #2c5f7c;
+            padding: 20px 25px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .summary-card.estimate {
+            background: linear-gradient(135deg, #2c5f7c 0%, #3498db 100%);
+            color: white;
+        }
+
+        .summary-card.cost {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+
+        .summary-card.profit-positive {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .summary-card.profit-negative {
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            color: white;
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .summary-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'Consolas', monospace;
+        }
+
+        /* モーダル */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2c5f7c;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* 空状態 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* ユーティリティ */
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-danger { color: #e74c3c; }
+        .text-success { color: #27ae60; }
+        .hidden { display: none !important; }
+
+        /* レスポンシブ */
+        @media (max-width: 1200px) {
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>建設積算・原価管理システム</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportData()">エクスポート</button>
+                <button class="btn btn-secondary" onclick="loadSampleData()">サンプルデータ</button>
+            </div>
+        </header>
+
+        <div class="project-header">
+            <div class="project-field">
+                <label>工事名称</label>
+                <input type="text" id="projectName" placeholder="例：○○邸新築工事">
+            </div>
+            <div class="project-field">
+                <label>工事場所</label>
+                <input type="text" id="projectLocation" placeholder="例：東京都○○区">
+            </div>
+            <div class="project-field">
+                <label>作成日</label>
+                <input type="date" id="createDate">
+            </div>
+            <div class="project-field">
+                <label>担当者</label>
+                <input type="text" id="manager" placeholder="担当者名">
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- サイドバー: マスター -->
+            <div class="sidebar">
+                <div class="sidebar-header">マスターデータ</div>
+                <div class="sidebar-tabs">
+                    <button class="sidebar-tab active" onclick="switchMasterTab('unit')">単価</button>
+                    <button class="sidebar-tab" onclick="switchMasterTab('bugakari')">歩掛</button>
+                </div>
+                <div class="sidebar-content" id="masterContent">
+                    <!-- マスターデータがここに表示される -->
+                </div>
+            </div>
+
+            <!-- メインツリーエリア -->
+            <div class="tree-area">
+                <div class="tree-toolbar">
+                    <button class="btn btn-primary" onclick="addWorkCategory()">+ 工種追加</button>
+                    <button class="btn btn-success" onclick="openItemModal()">+ 明細追加</button>
+                    <button class="btn btn-warning" onclick="openCostModal()">+ 内訳追加</button>
+                    <div style="flex:1"></div>
+                    <button class="btn btn-secondary" onclick="expandAll()">全展開</button>
+                    <button class="btn btn-secondary" onclick="collapseAll()">全収納</button>
+                    <button class="btn btn-danger" onclick="clearAll()">全クリア</button>
+                </div>
+
+                <div class="tree-container">
+                    <table class="tree-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width:280px; text-align:left; padding-left:15px;">項目名</th>
+                                <th rowspan="2" style="width:100px;">規格・仕様</th>
+                                <th rowspan="2" style="width:60px;">単位</th>
+                                <th rowspan="2" style="width:70px;">数量</th>
+                                <th colspan="2" class="group-header">見積</th>
+                                <th colspan="2" class="group-header">原価（実行予算）</th>
+                                <th rowspan="2" style="width:100px;">粗利</th>
+                                <th rowspan="2" style="width:60px;">利益率</th>
+                                <th rowspan="2" style="width:80px;">操作</th>
+                            </tr>
+                            <tr>
+                                <th style="width:90px;">単価</th>
+                                <th style="width:110px;">金額</th>
+                                <th style="width:90px;">単価</th>
+                                <th style="width:110px;">金額</th>
+                            </tr>
+                        </thead>
+                        <tbody id="treeBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- サマリー -->
+                <div class="summary-section">
+                    <div class="summary-grid">
+                        <div class="summary-card estimate">
+                            <div class="summary-label">見積合計</div>
+                            <div class="summary-value" id="totalEstimate">¥0</div>
+                        </div>
+                        <div class="summary-card cost">
+                            <div class="summary-label">原価合計</div>
+                            <div class="summary-value" id="totalCost">¥0</div>
+                        </div>
+                        <div class="summary-card" id="profitCard">
+                            <div class="summary-label">粗利合計</div>
+                            <div class="summary-value" id="totalProfit">¥0</div>
+                        </div>
+                        <div class="summary-card" id="profitRateCard">
+                            <div class="summary-label">全体利益率</div>
+                            <div class="summary-value" id="totalProfitRate">0.0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 明細追加モーダル -->
+    <div class="modal-overlay" id="itemModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>明細追加</h3>
+                <button class="modal-close" onclick="closeModal('itemModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>追加先の工種</label>
+                    <select id="itemParentSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label>項目名</label>
+                    <input type="text" id="itemName" placeholder="例：ビニールクロス貼り">
+                </div>
+                <div class="form-group">
+                    <label>規格・仕様</label>
+                    <input type="text" id="itemSpec" placeholder="例：AA級">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>単位</label>
+                        <select id="itemUnit">
+                            <option value="式">式</option>
+                            <option value="㎡">㎡</option>
+                            <option value="m">m</option>
+                            <option value="m²">m²</option>
+                            <option value="m³">m³</option>
+                            <option value="箇所">箇所</option>
+                            <option value="台">台</option>
+                            <option value="本">本</option>
+                            <option value="枚">枚</option>
+                            <option value="人工">人工</option>
+                            <option value="kg">kg</option>
+                            <option value="t">t</option>
+                            <option value="個">個</option>
+                            <option value="セット">セット</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>数量</label>
+                        <input type="number" id="itemQty" value="1" min="0" step="0.1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>見積単価</label>
+                        <input type="number" id="itemEstPrice" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>原価単価</label>
+                        <input type="number" id="itemCostPrice" value="0" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('itemModal')">キャンセル</button>
+                <button class="btn btn-primary" onclick="addItem()">追加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 内訳追加モーダル -->
+    <div class="modal-overlay" id="costModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>内訳要素追加</h3>
+                <button class="modal-close" onclick="closeModal('costModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>追加先の明細</label>
+                    <select id="costParentSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label>原価区分</label>
+                    <select id="costType">
+                        <option value="material">材料費</option>
+                        <option value="labor">労務費</option>
+                        <option value="subcontract">外注費</option>
+                        <option value="expense">経費</option>
+                        <option value="equipment">機械経費</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>項目名</label>
+                    <input type="text" id="costName" placeholder="例：クロス材">
+                </div>
+                <div class="form-group">
+                    <label>規格・仕様</label>
+                    <input type="text" id="costSpec" placeholder="例：サンゲツ SP-2801">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>単位</label>
+                        <select id="costUnit">
+                            <option value="式">式</option>
+                            <option value="㎡">㎡</option>
+                            <option value="m">m</option>
+                            <option value="m²">m²</option>
+                            <option value="m³">m³</option>
+                            <option value="箇所">箇所</option>
+                            <option value="台">台</option>
+                            <option value="本">本</option>
+                            <option value="枚">枚</option>
+                            <option value="人工">人工</option>
+                            <option value="kg">kg</option>
+                            <option value="t">t</option>
+                            <option value="個">個</option>
+                            <option value="セット">セット</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>数量</label>
+                        <input type="number" id="costQty" value="1" min="0" step="0.1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>見積単価</label>
+                        <input type="number" id="costEstPrice" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>原価単価</label>
+                        <input type="number" id="costCostPrice" value="0" min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>歩掛（人工/単位）</label>
+                        <input type="number" id="costBugakari" value="0" min="0" step="0.01" placeholder="例: 0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>労務単価（円/人工）</label>
+                        <input type="number" id="costLaborRate" value="20000" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('costModal')">キャンセル</button>
+                <button class="btn btn-primary" onclick="addCostBreakdown()">追加</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // データ構造
+        let projectData = {
+            id: generateId(),
+            name: '',
+            location: '',
+            createDate: '',
+            manager: '',
+            workCategories: []
+        };
+
+        // 単価マスター
+        const unitPriceMaster = [
+            { name: 'ビニールクロス', spec: 'AA級', unit: '㎡', estPrice: 1800, costPrice: 1200 },
+            { name: '床フローリング', spec: '複合', unit: '㎡', estPrice: 8500, costPrice: 5500 },
+            { name: '石膏ボード', spec: '12.5mm', unit: '㎡', estPrice: 1200, costPrice: 800 },
+            { name: '木製建具', spec: '片開き', unit: '箇所', estPrice: 45000, costPrice: 28000 },
+            { name: 'コンクリート', spec: '21N/mm²', unit: 'm³', estPrice: 18000, costPrice: 12000 },
+        ];
+
+        // 歩掛マスター
+        const bugakariMaster = [
+            { name: 'クロス貼り', unit: '㎡', bugakari: 0.08, laborRate: 20000 },
+            { name: 'フローリング施工', unit: '㎡', bugakari: 0.12, laborRate: 22000 },
+            { name: 'ボード貼り', unit: '㎡', bugakari: 0.05, laborRate: 20000 },
+            { name: '建具取付', unit: '箇所', bugakari: 0.5, laborRate: 22000 },
+            { name: 'コンクリート打設', unit: 'm³', bugakari: 0.3, laborRate: 18000 },
+        ];
+
+        // 展開状態を管理
+        let expandedNodes = new Set();
+
+        // ID生成
+        function generateId() {
+            return 'id_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('createDate').value = new Date().toISOString().split('T')[0];
+            renderMasterData('unit');
+            renderTree();
+            calculateTotals();
+        });
+
+        // マスターデータ表示切替
+        function switchMasterTab(type) {
+            document.querySelectorAll('.sidebar-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            renderMasterData(type);
+        }
+
+        // マスターデータ描画
+        function renderMasterData(type) {
+            const container = document.getElementById('masterContent');
+            let html = '';
+
+            if (type === 'unit') {
+                unitPriceMaster.forEach((item, idx) => {
+                    html += `
+                        <div class="master-item" draggable="true" ondragstart="dragMasterItem(event, 'unit', ${idx})">
+                            <div class="master-item-name">${item.name}</div>
+                            <div class="master-item-detail">${item.spec} | ${item.unit} | 見積:¥${item.estPrice.toLocaleString()} / 原価:¥${item.costPrice.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                bugakariMaster.forEach((item, idx) => {
+                    html += `
+                        <div class="master-item" draggable="true" ondragstart="dragMasterItem(event, 'bugakari', ${idx})">
+                            <div class="master-item-name">${item.name}</div>
+                            <div class="master-item-detail">${item.bugakari}人工/${item.unit} | 労務単価:¥${item.laborRate.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = html || '<div class="empty-state">マスターデータがありません</div>';
+        }
+
+        // 工種追加
+        function addWorkCategory() {
+            const workCategory = {
+                id: generateId(),
+                type: 'workCategory',
+                name: '新規工種',
+                items: []
+            };
+            projectData.workCategories.push(workCategory);
+            expandedNodes.add(workCategory.id);
+            renderTree();
+            calculateTotals();
+        }
+
+        // 明細モーダルを開く
+        function openItemModal() {
+            const select = document.getElementById('itemParentSelect');
+            select.innerHTML = '';
+
+            if (projectData.workCategories.length === 0) {
+                alert('先に工種を追加してください');
+                return;
+            }
+
+            projectData.workCategories.forEach(wc => {
+                select.innerHTML += `<option value="${wc.id}">${wc.name}</option>`;
+            });
+
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemSpec').value = '';
+            document.getElementById('itemQty').value = '1';
+            document.getElementById('itemEstPrice').value = '0';
+            document.getElementById('itemCostPrice').value = '0';
+
+            document.getElementById('itemModal').classList.add('active');
+        }
+
+        // 明細追加
+        function addItem() {
+            const parentId = document.getElementById('itemParentSelect').value;
+            const workCategory = projectData.workCategories.find(wc => wc.id === parentId);
+
+            if (!workCategory) return;
+
+            const item = {
+                id: generateId(),
+                type: 'item',
+                name: document.getElementById('itemName').value || '新規明細',
+                spec: document.getElementById('itemSpec').value,
+                unit: document.getElementById('itemUnit').value,
+                qty: parseFloat(document.getElementById('itemQty').value) || 0,
+                estPrice: parseFloat(document.getElementById('itemEstPrice').value) || 0,
+                costPrice: parseFloat(document.getElementById('itemCostPrice').value) || 0,
+                costBreakdowns: []
+            };
+
+            workCategory.items.push(item);
+            expandedNodes.add(parentId);
+            closeModal('itemModal');
+            renderTree();
+            calculateTotals();
+        }
+
+        // 内訳モーダルを開く
+        function openCostModal() {
+            const select = document.getElementById('costParentSelect');
+            select.innerHTML = '';
+
+            let hasItems = false;
+            projectData.workCategories.forEach(wc => {
+                wc.items.forEach(item => {
+                    hasItems = true;
+                    select.innerHTML += `<option value="${item.id}">${wc.name} > ${item.name}</option>`;
+                });
+            });
+
+            if (!hasItems) {
+                alert('先に明細を追加してください');
+                return;
+            }
+
+            document.getElementById('costName').value = '';
+            document.getElementById('costSpec').value = '';
+            document.getElementById('costQty').value = '1';
+            document.getElementById('costEstPrice').value = '0';
+            document.getElementById('costCostPrice').value = '0';
+            document.getElementById('costBugakari').value = '0';
+            document.getElementById('costLaborRate').value = '20000';
+
+            document.getElementById('costModal').classList.add('active');
+        }
+
+        // 内訳追加
+        function addCostBreakdown() {
+            const parentId = document.getElementById('costParentSelect').value;
+            let targetItem = null;
+
+            projectData.workCategories.forEach(wc => {
+                wc.items.forEach(item => {
+                    if (item.id === parentId) targetItem = item;
+                });
+            });
+
+            if (!targetItem) return;
+
+            const costBreakdown = {
+                id: generateId(),
+                type: 'costBreakdown',
+                costType: document.getElementById('costType').value,
+                name: document.getElementById('costName').value || '新規内訳',
+                spec: document.getElementById('costSpec').value,
+                unit: document.getElementById('costUnit').value,
+                qty: parseFloat(document.getElementById('costQty').value) || 0,
+                estPrice: parseFloat(document.getElementById('costEstPrice').value) || 0,
+                costPrice: parseFloat(document.getElementById('costCostPrice').value) || 0,
+                bugakari: parseFloat(document.getElementById('costBugakari').value) || 0,
+                laborRate: parseFloat(document.getElementById('costLaborRate').value) || 0
+            };
+
+            targetItem.costBreakdowns.push(costBreakdown);
+            expandedNodes.add(parentId);
+            closeModal('costModal');
+            renderTree();
+            calculateTotals();
+        }
+
+        // モーダルを閉じる
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // ツリー描画
+        function renderTree() {
+            const tbody = document.getElementById('treeBody');
+            let html = '';
+
+            if (projectData.workCategories.length === 0) {
+                html = `
+                    <tr>
+                        <td colspan="11">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📋</div>
+                                <div>工種を追加してください</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                projectData.workCategories.forEach((wc, wcIdx) => {
+                    html += renderWorkCategory(wc, wcIdx);
+                });
+            }
+
+            tbody.innerHTML = html;
+        }
+
+        // 工種行を描画
+        function renderWorkCategory(wc, wcIdx) {
+            const isExpanded = expandedNodes.has(wc.id);
+            const totals = calculateWorkCategoryTotals(wc);
+            const profitRate = totals.estAmount > 0 ? ((totals.estAmount - totals.costAmount) / totals.estAmount * 100) : 0;
+            const isNegative = totals.estAmount - totals.costAmount < 0;
+
+            let html = `
+                <tr class="tree-row level-0 ${isNegative ? 'negative' : ''}" data-id="${wc.id}">
+                    <td>
+                        <div class="tree-cell">
+                            <button class="toggle-btn" onclick="toggleNode('${wc.id}')">${isExpanded ? '−' : '+'}</button>
+                            <span class="node-icon">📁</span>
+                            <div class="node-name">
+                                <input type="text" value="${escapeHtml(wc.name)}" onchange="updateNode('${wc.id}', 'name', this.value)">
+                            </div>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="amount-cell">${formatCurrency(totals.estAmount)}</td>
+                    <td></td>
+                    <td class="amount-cell">${formatCurrency(totals.costAmount)}</td>
+                    <td class="profit-cell">${formatCurrency(totals.estAmount - totals.costAmount)}</td>
+                    <td class="rate-cell">${profitRate.toFixed(1)}%</td>
+                    <td class="action-cell">
+                        <button class="action-btn add" onclick="addItemToCategory('${wc.id}')" title="明細追加">+</button>
+                        <button class="action-btn delete" onclick="deleteNode('${wc.id}', 'workCategory')" title="削除">×</button>
+                    </td>
+                </tr>
+            `;
+
+            if (isExpanded) {
+                wc.items.forEach((item, itemIdx) => {
+                    html += renderItem(item, wc.id, itemIdx);
+                });
+            }
+
+            return html;
+        }
+
+        // 明細行を描画
+        function renderItem(item, parentId, itemIdx) {
+            const isExpanded = expandedNodes.has(item.id);
+            const hasCostBreakdowns = item.costBreakdowns && item.costBreakdowns.length > 0;
+
+            let estAmount, costAmount;
+            if (hasCostBreakdowns) {
+                const totals = calculateItemTotals(item);
+                estAmount = totals.estAmount;
+                costAmount = totals.costAmount;
+            } else {
+                estAmount = item.qty * item.estPrice;
+                costAmount = item.qty * item.costPrice;
+            }
+
+            const profit = estAmount - costAmount;
+            const profitRate = estAmount > 0 ? (profit / estAmount * 100) : 0;
+            const isNegative = profit < 0;
+
+            let html = `
+                <tr class="tree-row level-1 ${isNegative ? 'negative' : ''}" data-id="${item.id}">
+                    <td>
+                        <div class="tree-cell">
+                            <span class="indent"></span>
+                            ${hasCostBreakdowns ? `<button class="toggle-btn" onclick="toggleNode('${item.id}')">${isExpanded ? '−' : '+'}</button>` : '<span class="indent"></span>'}
+                            <span class="node-icon">📄</span>
+                            <div class="node-name">
+                                <input type="text" value="${escapeHtml(item.name)}" onchange="updateNode('${item.id}', 'name', this.value)">
+                            </div>
+                        </div>
+                    </td>
+                    <td><input type="text" value="${escapeHtml(item.spec)}" onchange="updateNode('${item.id}', 'spec', this.value)"></td>
+                    <td>
+                        <select onchange="updateNode('${item.id}', 'unit', this.value)">
+                            ${getUnitOptions(item.unit)}
+                        </select>
+                    </td>
+                    <td><input type="number" value="${item.qty}" min="0" step="0.1" onchange="updateNode('${item.id}', 'qty', parseFloat(this.value))"></td>
+                    <td><input type="number" value="${item.estPrice}" min="0" onchange="updateNode('${item.id}', 'estPrice', parseFloat(this.value))" ${hasCostBreakdowns ? 'disabled style="background:#eee"' : ''}></td>
+                    <td class="amount-cell">${formatCurrency(estAmount)}</td>
+                    <td><input type="number" value="${item.costPrice}" min="0" onchange="updateNode('${item.id}', 'costPrice', parseFloat(this.value))" ${hasCostBreakdowns ? 'disabled style="background:#eee"' : ''}></td>
+                    <td class="amount-cell">${formatCurrency(costAmount)}</td>
+                    <td class="profit-cell">${formatCurrency(profit)}</td>
+                    <td class="rate-cell">${profitRate.toFixed(1)}%</td>
+                    <td class="action-cell">
+                        <button class="action-btn add" onclick="addCostToItem('${item.id}')" title="内訳追加">+</button>
+                        <button class="action-btn delete" onclick="deleteNode('${item.id}', 'item', '${parentId}')" title="削除">×</button>
+                    </td>
+                </tr>
+            `;
+
+            if (isExpanded && hasCostBreakdowns) {
+                item.costBreakdowns.forEach((cb, cbIdx) => {
+                    html += renderCostBreakdown(cb, item.id, cbIdx);
+                });
+            }
+
+            return html;
+        }
+
+        // 内訳行を描画
+        function renderCostBreakdown(cb, parentId, cbIdx) {
+            const estAmount = cb.qty * cb.estPrice;
+            // 歩掛計算: 数量 × 歩掛 × 労務単価 を原価に加算
+            const laborCost = cb.bugakari > 0 ? cb.qty * cb.bugakari * cb.laborRate : 0;
+            const costAmount = (cb.qty * cb.costPrice) + laborCost;
+            const profit = estAmount - costAmount;
+            const profitRate = estAmount > 0 ? (profit / estAmount * 100) : 0;
+            const isNegative = profit < 0;
+
+            const costTypeLabels = {
+                material: '材料費',
+                labor: '労務費',
+                subcontract: '外注費',
+                expense: '経費',
+                equipment: '機械経費'
+            };
+
+            return `
+                <tr class="tree-row level-3 ${isNegative ? 'negative' : ''}" data-id="${cb.id}">
+                    <td>
+                        <div class="tree-cell">
+                            <span class="indent"></span>
+                            <span class="indent"></span>
+                            <span class="indent"></span>
+                            <span class="cost-type-tag ${cb.costType}">${costTypeLabels[cb.costType]}</span>
+                            <div class="node-name">
+                                <input type="text" value="${escapeHtml(cb.name)}" onchange="updateCostBreakdown('${parentId}', '${cb.id}', 'name', this.value)">
+                            </div>
+                        </div>
+                    </td>
+                    <td><input type="text" value="${escapeHtml(cb.spec)}" onchange="updateCostBreakdown('${parentId}', '${cb.id}', 'spec', this.value)"></td>
+                    <td>
+                        <select onchange="updateCostBreakdown('${parentId}', '${cb.id}', 'unit', this.value)">
+                            ${getUnitOptions(cb.unit)}
+                        </select>
+                    </td>
+                    <td><input type="number" value="${cb.qty}" min="0" step="0.1" onchange="updateCostBreakdown('${parentId}', '${cb.id}', 'qty', parseFloat(this.value))"></td>
+                    <td><input type="number" value="${cb.estPrice}" min="0" onchange="updateCostBreakdown('${parentId}', '${cb.id}', 'estPrice', parseFloat(this.value))"></td>
+                    <td class="amount-cell">${formatCurrency(estAmount)}</td>
+                    <td><input type="number" value="${cb.costPrice}" min="0" onchange="updateCostBreakdown('${parentId}', '${cb.id}', 'costPrice', parseFloat(this.value))"></td>
+                    <td class="amount-cell">${formatCurrency(costAmount)}${laborCost > 0 ? `<br><small style="color:#888">(労務:${formatCurrency(laborCost)})</small>` : ''}</td>
+                    <td class="profit-cell">${formatCurrency(profit)}</td>
+                    <td class="rate-cell">${profitRate.toFixed(1)}%</td>
+                    <td class="action-cell">
+                        <button class="action-btn delete" onclick="deleteCostBreakdown('${parentId}', '${cb.id}')" title="削除">×</button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // 単位オプション生成
+        function getUnitOptions(selected) {
+            const units = ['式', '㎡', 'm', 'm²', 'm³', '箇所', '台', '本', '枚', '人工', 'kg', 't', '個', 'セット'];
+            return units.map(u => `<option value="${u}" ${u === selected ? 'selected' : ''}>${u}</option>`).join('');
+        }
+
+        // ノード展開/収納
+        function toggleNode(id) {
+            if (expandedNodes.has(id)) {
+                expandedNodes.delete(id);
+            } else {
+                expandedNodes.add(id);
+            }
+            renderTree();
+        }
+
+        // 全展開
+        function expandAll() {
+            projectData.workCategories.forEach(wc => {
+                expandedNodes.add(wc.id);
+                wc.items.forEach(item => {
+                    expandedNodes.add(item.id);
+                });
+            });
+            renderTree();
+        }
+
+        // 全収納
+        function collapseAll() {
+            expandedNodes.clear();
+            renderTree();
+        }
+
+        // ノード更新
+        function updateNode(id, field, value) {
+            // 工種を検索
+            const wc = projectData.workCategories.find(w => w.id === id);
+            if (wc) {
+                wc[field] = value;
+                renderTree();
+                calculateTotals();
+                return;
+            }
+
+            // 明細を検索
+            projectData.workCategories.forEach(w => {
+                const item = w.items.find(i => i.id === id);
+                if (item) {
+                    item[field] = value;
+                }
+            });
+            renderTree();
+            calculateTotals();
+        }
+
+        // 内訳更新
+        function updateCostBreakdown(itemId, cbId, field, value) {
+            projectData.workCategories.forEach(wc => {
+                wc.items.forEach(item => {
+                    if (item.id === itemId) {
+                        const cb = item.costBreakdowns.find(c => c.id === cbId);
+                        if (cb) {
+                            cb[field] = value;
+                        }
+                    }
+                });
+            });
+            renderTree();
+            calculateTotals();
+        }
+
+        // 工種に明細を追加
+        function addItemToCategory(wcId) {
+            const wc = projectData.workCategories.find(w => w.id === wcId);
+            if (!wc) return;
+
+            const item = {
+                id: generateId(),
+                type: 'item',
+                name: '新規明細',
+                spec: '',
+                unit: '式',
+                qty: 1,
+                estPrice: 0,
+                costPrice: 0,
+                costBreakdowns: []
+            };
+
+            wc.items.push(item);
+            expandedNodes.add(wcId);
+            renderTree();
+            calculateTotals();
+        }
+
+        // 明細に内訳を追加
+        function addCostToItem(itemId) {
+            projectData.workCategories.forEach(wc => {
+                const item = wc.items.find(i => i.id === itemId);
+                if (item) {
+                    const cb = {
+                        id: generateId(),
+                        type: 'costBreakdown',
+                        costType: 'material',
+                        name: '新規内訳',
+                        spec: '',
+                        unit: item.unit,
+                        qty: item.qty,
+                        estPrice: 0,
+                        costPrice: 0,
+                        bugakari: 0,
+                        laborRate: 20000
+                    };
+                    item.costBreakdowns.push(cb);
+                    expandedNodes.add(itemId);
+                }
+            });
+            renderTree();
+            calculateTotals();
+        }
+
+        // ノード削除
+        function deleteNode(id, type, parentId) {
+            if (!confirm('削除してもよろしいですか？')) return;
+
+            if (type === 'workCategory') {
+                projectData.workCategories = projectData.workCategories.filter(wc => wc.id !== id);
+            } else if (type === 'item') {
+                const wc = projectData.workCategories.find(w => w.id === parentId);
+                if (wc) {
+                    wc.items = wc.items.filter(i => i.id !== id);
+                }
+            }
+            renderTree();
+            calculateTotals();
+        }
+
+        // 内訳削除
+        function deleteCostBreakdown(itemId, cbId) {
+            if (!confirm('削除してもよろしいですか？')) return;
+
+            projectData.workCategories.forEach(wc => {
+                wc.items.forEach(item => {
+                    if (item.id === itemId) {
+                        item.costBreakdowns = item.costBreakdowns.filter(cb => cb.id !== cbId);
+                    }
+                });
+            });
+            renderTree();
+            calculateTotals();
+        }
+
+        // 工種の合計計算（ロールアップ）
+        function calculateWorkCategoryTotals(wc) {
+            let estAmount = 0;
+            let costAmount = 0;
+
+            wc.items.forEach(item => {
+                if (item.costBreakdowns && item.costBreakdowns.length > 0) {
+                    const itemTotals = calculateItemTotals(item);
+                    estAmount += itemTotals.estAmount;
+                    costAmount += itemTotals.costAmount;
+                } else {
+                    estAmount += item.qty * item.estPrice;
+                    costAmount += item.qty * item.costPrice;
+                }
+            });
+
+            return { estAmount, costAmount };
+        }
+
+        // 明細の合計計算（内訳からロールアップ）
+        function calculateItemTotals(item) {
+            let estAmount = 0;
+            let costAmount = 0;
+
+            item.costBreakdowns.forEach(cb => {
+                estAmount += cb.qty * cb.estPrice;
+                const laborCost = cb.bugakari > 0 ? cb.qty * cb.bugakari * cb.laborRate : 0;
+                costAmount += (cb.qty * cb.costPrice) + laborCost;
+            });
+
+            return { estAmount, costAmount };
+        }
+
+        // 全体合計計算
+        function calculateTotals() {
+            let totalEst = 0;
+            let totalCost = 0;
+
+            projectData.workCategories.forEach(wc => {
+                const wcTotals = calculateWorkCategoryTotals(wc);
+                totalEst += wcTotals.estAmount;
+                totalCost += wcTotals.costAmount;
+            });
+
+            const totalProfit = totalEst - totalCost;
+            const profitRate = totalEst > 0 ? (totalProfit / totalEst * 100) : 0;
+
+            document.getElementById('totalEstimate').textContent = formatCurrency(totalEst);
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
+            document.getElementById('totalProfitRate').textContent = profitRate.toFixed(1) + '%';
+
+            // カード色変更
+            const profitCard = document.getElementById('profitCard');
+            const profitRateCard = document.getElementById('profitRateCard');
+
+            profitCard.className = 'summary-card';
+            profitRateCard.className = 'summary-card';
+
+            if (totalProfit > 0) {
+                profitCard.classList.add('profit-positive');
+                profitRateCard.classList.add('profit-positive');
+            } else if (totalProfit < 0) {
+                profitCard.classList.add('profit-negative');
+                profitRateCard.classList.add('profit-negative');
+            }
+        }
+
+        // 通貨フォーマット
+        function formatCurrency(value) {
+            return '¥' + Math.round(value).toLocaleString('ja-JP');
+        }
+
+        // HTMLエスケープ
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        // 全クリア
+        function clearAll() {
+            if (!confirm('全てのデータをクリアしますか？')) return;
+            projectData.workCategories = [];
+            expandedNodes.clear();
+            renderTree();
+            calculateTotals();
+        }
+
+        // サンプルデータ読み込み
+        function loadSampleData() {
+            if (projectData.workCategories.length > 0) {
+                if (!confirm('既存のデータを置き換えますか？')) return;
+            }
+
+            document.getElementById('projectName').value = '山田邸新築工事';
+            document.getElementById('projectLocation').value = '東京都世田谷区';
+
+            projectData.workCategories = [
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '内装工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'ビニールクロス貼り',
+                            spec: 'AA級',
+                            unit: '㎡',
+                            qty: 150,
+                            estPrice: 1800,
+                            costPrice: 1200,
+                            costBreakdowns: [
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'material',
+                                    name: 'クロス材',
+                                    spec: 'サンゲツ SP-2801',
+                                    unit: '㎡',
+                                    qty: 165,
+                                    estPrice: 800,
+                                    costPrice: 500,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                },
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'labor',
+                                    name: 'クロス貼り手間',
+                                    spec: '',
+                                    unit: '㎡',
+                                    qty: 150,
+                                    estPrice: 1000,
+                                    costPrice: 0,
+                                    bugakari: 0.08,
+                                    laborRate: 20000
+                                }
+                            ]
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '床フローリング',
+                            spec: '複合フローリング',
+                            unit: '㎡',
+                            qty: 80,
+                            estPrice: 8500,
+                            costPrice: 5500,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '木工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '木製建具',
+                            spec: '片開きドア',
+                            unit: '箇所',
+                            qty: 8,
+                            estPrice: 45000,
+                            costPrice: 28000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '収納造作',
+                            spec: 'クローゼット',
+                            unit: '箇所',
+                            qty: 4,
+                            estPrice: 120000,
+                            costPrice: 75000,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '仮設工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '外部足場',
+                            spec: '枠組足場',
+                            unit: '㎡',
+                            qty: 200,
+                            estPrice: 1200,
+                            costPrice: 900,
+                            costBreakdowns: []
+                        }
+                    ]
+                }
+            ];
+
+            // 全て展開
+            projectData.workCategories.forEach(wc => {
+                expandedNodes.add(wc.id);
+                wc.items.forEach(item => {
+                    if (item.costBreakdowns.length > 0) {
+                        expandedNodes.add(item.id);
+                    }
+                });
+            });
+
+            renderTree();
+            calculateTotals();
+        }
+
+        // エクスポート
+        function exportData() {
+            const data = {
+                projectName: document.getElementById('projectName').value,
+                projectLocation: document.getElementById('projectLocation').value,
+                createDate: document.getElementById('createDate').value,
+                manager: document.getElementById('manager').value,
+                workCategories: projectData.workCategories
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `積算データ_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // マスターアイテムのドラッグ
+        function dragMasterItem(event, type, index) {
+            event.dataTransfer.setData('text/plain', JSON.stringify({ type, index }));
+        }
+    </script>
+</body>
+</html>
