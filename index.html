@@ -1553,10 +1553,670 @@
                 if (!confirm('既存のデータを置き換えますか？')) return;
             }
 
-            document.getElementById('projectName').value = '山田邸新築工事';
-            document.getElementById('projectLocation').value = '東京都世田谷区';
+            document.getElementById('projectName').value = '鈴木邸新築工事';
+            document.getElementById('projectLocation').value = '神奈川県横浜市青葉区美しが丘3-15-8';
+            document.getElementById('manager').value = '田中 健一';
 
             projectData.workCategories = [
+                // 1. 仮設工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '仮設工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '外部足場',
+                            spec: '枠組足場 H=8.0m',
+                            unit: '㎡',
+                            qty: 320,
+                            estPrice: 1400,
+                            costPrice: 950,
+                            costBreakdowns: [
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'subcontract',
+                                    name: '足場架払い',
+                                    spec: '枠組足場リース',
+                                    unit: '㎡',
+                                    qty: 320,
+                                    estPrice: 1100,
+                                    costPrice: 750,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                },
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'material',
+                                    name: '養生シート',
+                                    spec: 'メッシュシート',
+                                    unit: '㎡',
+                                    qty: 320,
+                                    estPrice: 300,
+                                    costPrice: 200,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                }
+                            ]
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '仮設電気',
+                            spec: '工事用電源引込',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 85000,
+                            costPrice: 65000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '仮設水道',
+                            spec: '工事用給水設備',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 45000,
+                            costPrice: 32000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '仮設トイレ',
+                            spec: '簡易水洗式',
+                            unit: '基',
+                            qty: 1,
+                            estPrice: 120000,
+                            costPrice: 85000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '現場清掃・片付け',
+                            spec: '工期中',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 180000,
+                            costPrice: 130000,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 2. 基礎工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '基礎工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '根切り・埋戻し',
+                            spec: 'GL-600',
+                            unit: 'm³',
+                            qty: 45,
+                            estPrice: 4500,
+                            costPrice: 3200,
+                            costBreakdowns: [
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'equipment',
+                                    name: 'バックホウ掘削',
+                                    spec: '0.25m³級',
+                                    unit: 'm³',
+                                    qty: 45,
+                                    estPrice: 2500,
+                                    costPrice: 1800,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                },
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'expense',
+                                    name: '残土処分',
+                                    spec: '運搬・処分費',
+                                    unit: 'm³',
+                                    qty: 35,
+                                    estPrice: 2000,
+                                    costPrice: 1400,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                }
+                            ]
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '砕石地業',
+                            spec: 'C-40 t=100',
+                            unit: '㎡',
+                            qty: 72,
+                            estPrice: 2800,
+                            costPrice: 1900,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '捨てコンクリート',
+                            spec: 't=50',
+                            unit: '㎡',
+                            qty: 72,
+                            estPrice: 3200,
+                            costPrice: 2200,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '基礎配筋',
+                            spec: 'D13・D10',
+                            unit: 'kg',
+                            qty: 1850,
+                            estPrice: 180,
+                            costPrice: 125,
+                            costBreakdowns: [
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'material',
+                                    name: '鉄筋材',
+                                    spec: 'SD295A',
+                                    unit: 'kg',
+                                    qty: 1850,
+                                    estPrice: 95,
+                                    costPrice: 72,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                },
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'labor',
+                                    name: '配筋手間',
+                                    spec: '',
+                                    unit: 'kg',
+                                    qty: 1850,
+                                    estPrice: 85,
+                                    costPrice: 0,
+                                    bugakari: 0.008,
+                                    laborRate: 22000
+                                }
+                            ]
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '基礎コンクリート',
+                            spec: 'FC21 スランプ18',
+                            unit: 'm³',
+                            qty: 28,
+                            estPrice: 22000,
+                            costPrice: 15500,
+                            costBreakdowns: [
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'material',
+                                    name: 'コンクリート',
+                                    spec: '生コン FC21-18-20',
+                                    unit: 'm³',
+                                    qty: 28,
+                                    estPrice: 16000,
+                                    costPrice: 11500,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                },
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'labor',
+                                    name: '打設手間',
+                                    spec: 'ポンプ車使用',
+                                    unit: 'm³',
+                                    qty: 28,
+                                    estPrice: 6000,
+                                    costPrice: 0,
+                                    bugakari: 0.18,
+                                    laborRate: 22000
+                                }
+                            ]
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '型枠工事',
+                            spec: '基礎立上り',
+                            unit: '㎡',
+                            qty: 85,
+                            estPrice: 5500,
+                            costPrice: 3800,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '土間コンクリート',
+                            spec: 't=120 ワイヤーメッシュ入',
+                            unit: '㎡',
+                            qty: 65,
+                            estPrice: 6500,
+                            costPrice: 4500,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 3. 木工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '木工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '土台',
+                            spec: '桧 105×105 防腐処理',
+                            unit: 'm',
+                            qty: 52,
+                            estPrice: 4200,
+                            costPrice: 2900,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '大引',
+                            spec: '米松 90×90',
+                            unit: 'm',
+                            qty: 68,
+                            estPrice: 2400,
+                            costPrice: 1650,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '柱',
+                            spec: '杉集成材 105×105',
+                            unit: '本',
+                            qty: 42,
+                            estPrice: 8500,
+                            costPrice: 5800,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '梁・桁',
+                            spec: '米松集成材',
+                            unit: 'm³',
+                            qty: 4.2,
+                            estPrice: 165000,
+                            costPrice: 115000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '小屋組',
+                            spec: '米松 母屋・垂木',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 420000,
+                            costPrice: 295000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '床下地',
+                            spec: '構造用合板 24mm',
+                            unit: '㎡',
+                            qty: 110,
+                            estPrice: 3800,
+                            costPrice: 2600,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '壁下地',
+                            spec: '間柱・筋交い',
+                            unit: '㎡',
+                            qty: 185,
+                            estPrice: 3200,
+                            costPrice: 2200,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '天井下地',
+                            spec: '野縁・野縁受け',
+                            unit: '㎡',
+                            qty: 105,
+                            estPrice: 2800,
+                            costPrice: 1900,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '階段',
+                            spec: '木製 直階段',
+                            unit: '箇所',
+                            qty: 1,
+                            estPrice: 280000,
+                            costPrice: 195000,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 4. 屋根工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '屋根工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '屋根下地',
+                            spec: '野地板 構造用合板12mm',
+                            unit: '㎡',
+                            qty: 95,
+                            estPrice: 2600,
+                            costPrice: 1800,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'ルーフィング',
+                            spec: 'アスファルトルーフィング',
+                            unit: '㎡',
+                            qty: 95,
+                            estPrice: 850,
+                            costPrice: 580,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '屋根材',
+                            spec: 'ガルバリウム鋼板 縦葺き',
+                            unit: '㎡',
+                            qty: 95,
+                            estPrice: 9500,
+                            costPrice: 6800,
+                            costBreakdowns: [
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'material',
+                                    name: 'ガルバリウム鋼板',
+                                    spec: 't=0.35 カラー',
+                                    unit: '㎡',
+                                    qty: 105,
+                                    estPrice: 4200,
+                                    costPrice: 3100,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                },
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'labor',
+                                    name: '屋根葺き手間',
+                                    spec: '',
+                                    unit: '㎡',
+                                    qty: 95,
+                                    estPrice: 5300,
+                                    costPrice: 0,
+                                    bugakari: 0.15,
+                                    laborRate: 24000
+                                }
+                            ]
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '棟板金',
+                            spec: 'ガルバリウム鋼板',
+                            unit: 'm',
+                            qty: 12,
+                            estPrice: 4500,
+                            costPrice: 3100,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '雨樋',
+                            spec: '塩ビ製 角樋',
+                            unit: 'm',
+                            qty: 38,
+                            estPrice: 3800,
+                            costPrice: 2600,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 5. 外壁工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '外壁工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '透湿防水シート',
+                            spec: 'タイベック',
+                            unit: '㎡',
+                            qty: 185,
+                            estPrice: 650,
+                            costPrice: 420,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'サイディング',
+                            spec: '窯業系 16mm',
+                            unit: '㎡',
+                            qty: 165,
+                            estPrice: 8200,
+                            costPrice: 5600,
+                            costBreakdowns: [
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'material',
+                                    name: 'サイディング材',
+                                    spec: 'ニチハ モエンエクセラード',
+                                    unit: '㎡',
+                                    qty: 180,
+                                    estPrice: 4800,
+                                    costPrice: 3400,
+                                    bugakari: 0,
+                                    laborRate: 0
+                                },
+                                {
+                                    id: generateId(),
+                                    type: 'costBreakdown',
+                                    costType: 'labor',
+                                    name: 'サイディング施工',
+                                    spec: '',
+                                    unit: '㎡',
+                                    qty: 165,
+                                    estPrice: 3400,
+                                    costPrice: 0,
+                                    bugakari: 0.1,
+                                    laborRate: 22000
+                                }
+                            ]
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'シーリング',
+                            spec: '変成シリコン',
+                            unit: 'm',
+                            qty: 220,
+                            estPrice: 1200,
+                            costPrice: 820,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '軒天',
+                            spec: 'ケイカル板 t=6',
+                            unit: '㎡',
+                            qty: 28,
+                            estPrice: 5500,
+                            costPrice: 3800,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 6. サッシ・ガラス工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: 'サッシ・ガラス工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '掃出し窓',
+                            spec: 'アルミ樹脂複合 16520',
+                            unit: '箇所',
+                            qty: 3,
+                            estPrice: 185000,
+                            costPrice: 128000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '引違い窓',
+                            spec: 'アルミ樹脂複合 16509',
+                            unit: '箇所',
+                            qty: 5,
+                            estPrice: 95000,
+                            costPrice: 65000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '縦すべり出し窓',
+                            spec: 'アルミ樹脂複合 03609',
+                            unit: '箇所',
+                            qty: 6,
+                            estPrice: 48000,
+                            costPrice: 32000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'FIX窓',
+                            spec: 'アルミ樹脂複合 06005',
+                            unit: '箇所',
+                            qty: 2,
+                            estPrice: 35000,
+                            costPrice: 24000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '玄関ドア',
+                            spec: '断熱ドア 片開き',
+                            unit: '箇所',
+                            qty: 1,
+                            estPrice: 320000,
+                            costPrice: 225000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '勝手口ドア',
+                            spec: 'アルミ製 採風タイプ',
+                            unit: '箇所',
+                            qty: 1,
+                            estPrice: 125000,
+                            costPrice: 85000,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 7. 断熱工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '断熱工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '床断熱',
+                            spec: 'フェノールフォーム t=90',
+                            unit: '㎡',
+                            qty: 68,
+                            estPrice: 4200,
+                            costPrice: 2900,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '壁断熱',
+                            spec: '高性能グラスウール 16K t=105',
+                            unit: '㎡',
+                            qty: 165,
+                            estPrice: 2800,
+                            costPrice: 1850,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '天井断熱',
+                            spec: '吹込みグラスウール t=300',
+                            unit: '㎡',
+                            qty: 68,
+                            estPrice: 3500,
+                            costPrice: 2400,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '気密シート',
+                            spec: 'ポリエチレンフィルム',
+                            unit: '㎡',
+                            qty: 185,
+                            estPrice: 450,
+                            costPrice: 280,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 8. 内装工事
                 {
                     id: generateId(),
                     type: 'workCategory',
@@ -1565,23 +2225,45 @@
                         {
                             id: generateId(),
                             type: 'item',
-                            name: 'ビニールクロス貼り',
-                            spec: 'AA級',
+                            name: '石膏ボード',
+                            spec: '12.5mm 壁',
                             unit: '㎡',
-                            qty: 150,
+                            qty: 320,
                             estPrice: 1800,
                             costPrice: 1200,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '石膏ボード',
+                            spec: '9.5mm 天井',
+                            unit: '㎡',
+                            qty: 105,
+                            estPrice: 1600,
+                            costPrice: 1050,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'ビニールクロス',
+                            spec: 'AA級 量産品',
+                            unit: '㎡',
+                            qty: 380,
+                            estPrice: 1650,
+                            costPrice: 1100,
                             costBreakdowns: [
                                 {
                                     id: generateId(),
                                     type: 'costBreakdown',
                                     costType: 'material',
                                     name: 'クロス材',
-                                    spec: 'サンゲツ SP-2801',
+                                    spec: 'サンゲツ SP',
                                     unit: '㎡',
-                                    qty: 165,
-                                    estPrice: 800,
-                                    costPrice: 500,
+                                    qty: 420,
+                                    estPrice: 680,
+                                    costPrice: 480,
                                     bugakari: 0,
                                     laborRate: 0
                                 },
@@ -1592,10 +2274,10 @@
                                     name: 'クロス貼り手間',
                                     spec: '',
                                     unit: '㎡',
-                                    qty: 150,
-                                    estPrice: 1000,
+                                    qty: 380,
+                                    estPrice: 970,
                                     costPrice: 0,
-                                    bugakari: 0.08,
+                                    bugakari: 0.035,
                                     laborRate: 20000
                                 }
                             ]
@@ -1603,59 +2285,385 @@
                         {
                             id: generateId(),
                             type: 'item',
-                            name: '床フローリング',
-                            spec: '複合フローリング',
+                            name: 'アクセントクロス',
+                            spec: '1000番台',
                             unit: '㎡',
-                            qty: 80,
-                            estPrice: 8500,
-                            costPrice: 5500,
-                            costBreakdowns: []
-                        }
-                    ]
-                },
-                {
-                    id: generateId(),
-                    type: 'workCategory',
-                    name: '木工事',
-                    items: [
-                        {
-                            id: generateId(),
-                            type: 'item',
-                            name: '木製建具',
-                            spec: '片開きドア',
-                            unit: '箇所',
-                            qty: 8,
-                            estPrice: 45000,
-                            costPrice: 28000,
+                            qty: 45,
+                            estPrice: 2200,
+                            costPrice: 1450,
                             costBreakdowns: []
                         },
                         {
                             id: generateId(),
                             type: 'item',
-                            name: '収納造作',
-                            spec: 'クローゼット',
-                            unit: '箇所',
+                            name: 'フローリング',
+                            spec: '複合フローリング 12mm',
+                            unit: '㎡',
+                            qty: 85,
+                            estPrice: 8500,
+                            costPrice: 5800,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'クッションフロア',
+                            spec: '洗面・トイレ',
+                            unit: '㎡',
+                            qty: 12,
+                            estPrice: 4500,
+                            costPrice: 3000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'タイル',
+                            spec: '玄関 300角',
+                            unit: '㎡',
                             qty: 4,
-                            estPrice: 120000,
-                            costPrice: 75000,
+                            estPrice: 15000,
+                            costPrice: 10500,
                             costBreakdowns: []
                         }
                     ]
                 },
+                // 9. 建具工事
                 {
                     id: generateId(),
                     type: 'workCategory',
-                    name: '仮設工事',
+                    name: '建具工事',
                     items: [
                         {
                             id: generateId(),
                             type: 'item',
-                            name: '外部足場',
-                            spec: '枠組足場',
+                            name: '室内ドア',
+                            spec: '片開き ハイドア',
+                            unit: '箇所',
+                            qty: 7,
+                            estPrice: 68000,
+                            costPrice: 46000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '引戸',
+                            spec: 'Vレール 上吊り',
+                            unit: '箇所',
+                            qty: 3,
+                            estPrice: 85000,
+                            costPrice: 58000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'クローゼット扉',
+                            spec: '折戸 W1800',
+                            unit: '箇所',
+                            qty: 4,
+                            estPrice: 95000,
+                            costPrice: 65000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '収納棚',
+                            spec: '可動棚 シューズクローク',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 120000,
+                            costPrice: 82000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '造作収納',
+                            spec: 'ウォークインクローゼット',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 280000,
+                            costPrice: 195000,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 10. 電気設備工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '電気設備工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '分電盤',
+                            spec: '主幹60A 20回路',
+                            unit: '面',
+                            qty: 1,
+                            estPrice: 85000,
+                            costPrice: 58000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '配線工事',
+                            spec: 'VVF2.0 幹線・分岐',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 380000,
+                            costPrice: 265000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'コンセント',
+                            spec: '2口コンセント',
+                            unit: '箇所',
+                            qty: 32,
+                            estPrice: 4500,
+                            costPrice: 3000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '照明器具',
+                            spec: 'LEDダウンライト',
+                            unit: '台',
+                            qty: 24,
+                            estPrice: 8500,
+                            costPrice: 5800,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '照明器具',
+                            spec: 'LEDシーリングライト',
+                            unit: '台',
+                            qty: 5,
+                            estPrice: 25000,
+                            costPrice: 17000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'スイッチ',
+                            spec: 'ワイドスイッチ',
+                            unit: '箇所',
+                            qty: 18,
+                            estPrice: 3200,
+                            costPrice: 2100,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'TV・LAN配線',
+                            spec: 'マルチメディア配線',
+                            unit: '箇所',
+                            qty: 6,
+                            estPrice: 12000,
+                            costPrice: 8200,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'エアコン配管',
+                            spec: '先行配管 隠蔽',
+                            unit: '箇所',
+                            qty: 5,
+                            estPrice: 28000,
+                            costPrice: 19000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '24時間換気システム',
+                            spec: '第3種換気',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 150000,
+                            costPrice: 105000,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 11. 給排水設備工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '給排水設備工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '給水配管',
+                            spec: '架橋ポリエチレン管',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 280000,
+                            costPrice: 195000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '給湯配管',
+                            spec: '架橋ポリエチレン管',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 220000,
+                            costPrice: 152000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '排水配管',
+                            spec: 'VU管',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 320000,
+                            costPrice: 225000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'ユニットバス',
+                            spec: '1616サイズ',
+                            unit: '台',
+                            qty: 1,
+                            estPrice: 850000,
+                            costPrice: 595000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'システムキッチン',
+                            spec: 'I型 W2550',
+                            unit: '台',
+                            qty: 1,
+                            estPrice: 950000,
+                            costPrice: 665000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '洗面化粧台',
+                            spec: 'W750 三面鏡',
+                            unit: '台',
+                            qty: 1,
+                            estPrice: 180000,
+                            costPrice: 125000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'トイレ',
+                            spec: 'タンクレス 1F',
+                            unit: '台',
+                            qty: 1,
+                            estPrice: 280000,
+                            costPrice: 195000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'トイレ',
+                            spec: 'タンク式 2F',
+                            unit: '台',
+                            qty: 1,
+                            estPrice: 125000,
+                            costPrice: 85000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'エコキュート',
+                            spec: '370L フルオート',
+                            unit: '台',
+                            qty: 1,
+                            estPrice: 480000,
+                            costPrice: 335000,
+                            costBreakdowns: []
+                        }
+                    ]
+                },
+                // 12. 外構工事
+                {
+                    id: generateId(),
+                    type: 'workCategory',
+                    name: '外構工事',
+                    items: [
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '土間コンクリート',
+                            spec: '駐車場 t=120',
                             unit: '㎡',
-                            qty: 200,
-                            estPrice: 1200,
-                            costPrice: 900,
+                            qty: 30,
+                            estPrice: 9500,
+                            costPrice: 6500,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'ブロック塀',
+                            spec: 'CB120 H=1200',
+                            unit: 'm',
+                            qty: 18,
+                            estPrice: 18000,
+                            costPrice: 12500,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'フェンス',
+                            spec: 'アルミ H=800',
+                            unit: 'm',
+                            qty: 12,
+                            estPrice: 15000,
+                            costPrice: 10200,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: 'ポスト・表札',
+                            spec: '機能門柱',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 150000,
+                            costPrice: 105000,
+                            costBreakdowns: []
+                        },
+                        {
+                            id: generateId(),
+                            type: 'item',
+                            name: '植栽',
+                            spec: 'シンボルツリー他',
+                            unit: '式',
+                            qty: 1,
+                            estPrice: 180000,
+                            costPrice: 125000,
                             costBreakdowns: []
                         }
                     ]
